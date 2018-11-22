@@ -1,110 +1,49 @@
-FROM php:7.0
+FROM debian:9.6-slim
 
 MAINTAINER Martin Handl <martin.handl@artinsolutions.com>
 
 # Set TERM to suppress warning messages.
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
-ENV XDEBUG_VERSION 2.6.0
 
-RUN additionalPackages=" \
-        apt-transport-https \
-        git \
-        msmtp-mta \
-        openssh-client \
-        rsync \
-    " \
-    buildDeps=" \
-        freetds-dev \
-        libbz2-dev \
-        libc-client-dev \
-        libenchant-dev \
-        libfreetype6-dev \
-        libgmp3-dev \
-        libicu-dev \
-        libjpeg62-turbo-dev \
-        libkrb5-dev \
-        libldap2-dev \
-        libmcrypt-dev \
-        libpng-dev \
-        libpq-dev \
-        libpspell-dev \
-        librabbitmq-dev \
-        libsasl2-dev \
-        libsnmp-dev \
-        libssl-dev \
-        libtidy-dev \
-        libxml2-dev \
-        libxpm-dev \
-        libxslt1-dev \
-	libedit-dev \
-        libreadline-dev \
-        zlib1g-dev \
-    " \
-    && runDeps=" \
-        libc-client2007e \
-        libenchant1c2a \
-        libfreetype6 \
-        libjpeg62-turbo \
-        libmcrypt4 \
-        libpq5 \
-        libsybdb5 \
-        libxpm4 \
-        libxslt1.1 \
-      	gnupg \
-        snmp \
-    " \
-    && phpModules=" \
-        bcmath \
-        calendar \
-        exif \
-        gettext \
-        imap \
-        ldap \
-        mcrypt \
-        mysqli \
-        pdo_mysql \
-        readline \
-        shmop \
-        snmp \
-        soap \
-        sockets \
-        sysvmsg \
-        sysvsem \
-        sysvshm \
-        tokenizer \
-        tidy \
-        wddx \
-        xmlrpc \
-        xsl \
-        zip \
-        gd \
-        xdebug \
-    " \
-    && echo "deb http://httpredir.debian.org/debian jessie contrib non-free" > /etc/apt/sources.list.d/additional.list \
+RUN phpPkgs=" \
+	apache2 \
+	memcached \
+        php7.0 \
+        php7.0-bcmath \
+        php7.0-bz2 \
+        php7.0-cli \
+        php7.0-common \
+        php7.0-curl \
+        php7.0-dba \
+        php7.0-dev \
+        php7.0-enchant \
+        php7.0-fpm \
+        php7.0-gd \
+        php7.0-gmp \
+        php7.0-imap \
+        php7.0-intl \
+        php7.0-json \
+        php7.0-ldap \
+        php7.0-mbstring \
+        php7.0-mcrypt \
+        php7.0-mysql \
+        php7.0-opcache \
+        php7.0-pspell \
+        php7.0-readline \
+        php7.0-recode \
+        php7.0-snmp \
+        php7.0-soap \
+        php7.0-tidy \
+        php7.0-xml \
+        php7.0-xmlrpc \
+        php7.0-xsl \
+        php7.0-zip \
+	php-memcached \
+      " \
     && apt-get update \
-    && apt-get install -y --no-install-recommends $additionalPackages $buildDeps $runDeps \
-    && docker-php-source extract \
-    && cd /usr/src/php/ext/ \
-    && curl -L http://xdebug.org/files/xdebug-$XDEBUG_VERSION.tgz | tar -zxf - \
-    && mv xdebug-$XDEBUG_VERSION xdebug \
-    && ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h \
-    && ln -s /usr/lib/x86_64-linux-gnu/libldap_r.so /usr/lib/libldap.so \
-    && ln -s /usr/lib/x86_64-linux-gnu/libldap_r.a /usr/lib/libldap_r.a \
-    && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a \
-    && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-xpm-dir=/usr/include/ \
-    && docker-php-ext-configure imap --with-imap --with-kerberos --with-imap-ssl \
-    && docker-php-ext-configure ldap --with-ldap-sasl \
-    && docker-php-ext-install $phpModules \
-    && pecl install igbinary \
-#    && printf "\n" | pecl install memcache \
-    && for ext in $phpModules; do \
-           rm -f /usr/local/etc/php/conf.d/docker-php-ext-$ext.ini; \
-       done \
-    && docker-php-source delete \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt-get install -y $phpPkgs \
+    && apt-get clean
 
 # Install composer and put binary into $PATH
 RUN curl -sS https://getcomposer.org/installer | php \
@@ -132,7 +71,6 @@ COPY msmtprc /etc/
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["php", "-a"]
-
 
 ENV DEBIAN_FRONTEND teletype
 
