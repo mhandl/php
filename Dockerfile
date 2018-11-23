@@ -39,9 +39,19 @@ RUN phpPkgs=" \
         php7.0-xmlrpc \
         php7.0-xsl \
         php7.0-zip \
+				php-pecl-http \
+				php-msgpack \
+				php-mockery \
+				php-memcache \
 				php-memcached \
 				phpunit \
 				 php-codesniffer \
+				 php-codecoverage \
+				 php-common \
+				 php-fpm \
+				 php-gnupg \
+				 php-igbinary \
+				 php-xdebug \
       " \
     && apt-get update \
     && apt-get install -y $phpPkgs \
