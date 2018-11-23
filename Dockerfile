@@ -41,6 +41,7 @@ RUN phpPkgs=" \
         php7.0-zip \
 				php-memcached \
 				phpunit \
+				 php-codesniffer \
       " \
     && apt-get update \
     && apt-get install -y $phpPkgs \
@@ -58,14 +59,14 @@ RUN curl -sS https://getcomposer.org/installer | php \
 #    && ln -s /usr/local/bin/phpunit.phar /usr/local/bin/phpunit
 
 # Install PHP Code sniffer
-RUN curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
-    && chmod 755 phpcs.phar \
-    && mv phpcs.phar /usr/local/bin/ \
-    && ln -s /usr/local/bin/phpcs.phar /usr/local/bin/phpcs \
-    && curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar \
-    && chmod 755 phpcbf.phar \
-    && mv phpcbf.phar /usr/local/bin/ \
-    && ln -s /usr/local/bin/phpcbf.phar /usr/local/bin/phpcbf
+#RUN curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
+#    && chmod 755 phpcs.phar \
+#    && mv phpcs.phar /usr/local/bin/ \
+#    && ln -s /usr/local/bin/phpcs.phar /usr/local/bin/phpcs \
+#    && curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar \
+#    && chmod 755 phpcbf.phar \
+#    && mv phpcbf.phar /usr/local/bin/ \
+#    && ln -s /usr/local/bin/phpcbf.phar /usr/local/bin/phpcbf
 
 
 COPY msmtprc /etc/
