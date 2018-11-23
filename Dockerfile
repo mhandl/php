@@ -7,8 +7,8 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
 RUN phpPkgs=" \
-	apache2 \
-	memcached \
+	      apache2 \
+	      memcached \
         php7.0 \
         php7.0-bcmath \
         php7.0-bz2 \
@@ -39,7 +39,8 @@ RUN phpPkgs=" \
         php7.0-xmlrpc \
         php7.0-xsl \
         php7.0-zip \
-	php-memcached \
+				php-memcached \
+				phpunit \
       " \
     && apt-get update \
     && apt-get install -y $phpPkgs \
@@ -51,10 +52,10 @@ RUN curl -sS https://getcomposer.org/installer | php \
     && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
 # Install phpunit and put binary into $PATH
-RUN curl -sSLo phpunit.phar https://phar.phpunit.de/phpunit.phar \
-    && chmod 755 phpunit.phar \
-    && mv phpunit.phar /usr/local/bin/ \
-    && ln -s /usr/local/bin/phpunit.phar /usr/local/bin/phpunit
+#RUN curl -sSLo phpunit.phar https://phar.phpunit.de/phpunit.phar \
+#    && chmod 755 phpunit.phar \
+#    && mv phpunit.phar /usr/local/bin/ \
+#    && ln -s /usr/local/bin/phpunit.phar /usr/local/bin/phpunit
 
 # Install PHP Code sniffer
 RUN curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
@@ -68,9 +69,8 @@ RUN curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
 
 
 COPY msmtprc /etc/
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+#COPY entrypoint.sh /entrypoint.sh
+#ENTRYPOINT ["/entrypoint.sh"]
 CMD ["php", "-a"]
 
 ENV DEBIAN_FRONTEND teletype
-
